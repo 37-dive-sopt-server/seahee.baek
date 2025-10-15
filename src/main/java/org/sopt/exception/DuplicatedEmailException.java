@@ -1,0 +1,7 @@
+package org.sopt.exception;
+
+public class DuplicatedEmailException extends MyException {
+	public DuplicatedEmailException(String message) {
+		super(message);
+	}
+}
