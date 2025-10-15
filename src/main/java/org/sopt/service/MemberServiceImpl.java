@@ -16,17 +16,15 @@ public class MemberServiceImpl implements MemberService {
 	private static long sequence = 1L;
 
 	public Long join(String name, LocalDate birthday, String email, GENDER gender) {
-		System.out.println("이메일 유효검사");
-		boolean a = findByEmail(email).isPresent();
-		System.out.println("a = " + a);
-		if(a) {
+		if(findByEmail(email).isPresent()) {
 			throw new DuplicatedEmailException(ErrorMessage.EMAIL_DUPLICATE.getMessage());
 		}
-		System.out.println("회원 객체 생성");
 		Member member = new Member(sequence++, name, birthday, email, gender);
-
-		System.out.println("회원 저장");
-		memberRepository.save(member);
+		try {
+			memberRepository.save(member);
+		} catch (Exception e) {
+			throw new RuntimeException("❌ 회원 등록 실패");
+		}
 		return member.getId();
 	}
 

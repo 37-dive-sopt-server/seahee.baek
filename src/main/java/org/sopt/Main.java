@@ -22,34 +22,16 @@ public class Main {
 
 			switch (choice) {
 				case "1":
+					try {
+						String name = memberController.nonEmptyChecker(memberView.printNamePrompt());
+						String birthday = memberController.validAgeChecker(memberView.printBirthdayPrompt());
+						String email = memberController.validEmailChecker(memberView.printEmailPrompt());
+						String gender = memberController.validGenderChecker(memberView.printGenderPrompt());
 
-					String name = memberView.printNamePrompt();
-					while(!memberController.nonEmptyChecker(name)) {
-						name = memberView.printNamePrompt();
-					}
-
-					String birthday = memberView.printBirthdayPrompt();
-					while(!memberController.validAgeChecker(birthday)) {
-						birthday = memberView.printBirthdayPrompt();
-					}
-
-					String email = memberView.printEmailPrompt();
-					while(!memberController.validEmailChecker(email)) {
-						email = memberView.printEmailPrompt();
-					}
-
-					String gender = memberView.printGenderPrompt();
-					while(!memberController.validGenderChecker(gender)) {
-						gender = memberView.printGenderPrompt();
-					}
-
-
-					Long createdId = memberController.createMember(name, birthday, email, gender);
-
-					if (createdId != null) {
+						Long createdId = memberController.createMember(name, birthday, email, gender);
 						System.out.println("✅ 회원 등록 완료 (ID: " + createdId + ")");
-					} else {
-						System.out.println("❌ 회원 등록 실패");
+					} catch (Exception e) {
+						break;
 					}
 					break;
 				case "2":

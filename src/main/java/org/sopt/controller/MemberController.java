@@ -1,7 +1,5 @@
 package org.sopt.controller;
 
-import static java.time.chrono.JapaneseEra.*;
-
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -9,6 +7,9 @@ import java.util.Optional;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
+import org.sopt.exception.BadRequestException;
+import org.sopt.exception.InvalidAgeException;
+import org.sopt.exception.util.ErrorMessage;
 import org.sopt.service.MemberServiceImpl;
 
 public class MemberController {
@@ -18,8 +19,6 @@ public class MemberController {
 	public Long createMember(String name, String birthdayString, String email, String genderString) {
 		LocalDate birthday = LocalDate.parse(birthdayString);
 		GENDER gender = GENDER.fromString(genderString);
-
-		System.out.println("controller 문제 없음");
 
 		return memberService.join(name, birthday, email, gender);
 	}
@@ -32,53 +31,44 @@ public class MemberController {
 		return memberService.findAllMembers();
 	}
 
-	public boolean validEmailChecker(String email) {
+	public String validEmailChecker(String email) {
 		nonEmptyChecker(email);
 		if (!email.contains("@")) {
-			System.out.println("⚠️ 올바른 이메일 형식이 아닙니다. @ 문자를 포함해야합니다.");
-			return false;
+			throw new BadRequestException(ErrorMessage.INVALID_EMAIL_ADDRESS.getMessage());
 		}
-		return true;
+		return email;
 	}
 
-	public boolean validAgeChecker(String birthday) {
+	public String validAgeChecker(String birthday) {
 		nonEmptyChecker(birthday);
 		if(!birthday.matches("\\d{4}-\\d{2}-\\d{2}")) {
-			System.out.println("⚠️ 날짜 형식에 맞춰 입력해주세요.");
-			return false;
+			throw new BadRequestException(ErrorMessage.INVALID_BIRTH_FORMAT.getMessage());
 		}
 
 		LocalDate today = LocalDate.now();
 		int age = Period.between(LocalDate.parse(birthday), today).getYears();
 		if( age >= 20 && age <= 100 ) {
-			return true;
+			throw new InvalidAgeException(ErrorMessage.INVALID_AGE.getMessage());
 		}
-		else {
-			System.out.println("️⚠️ 나이는 20살 이상, 100살 이하여야 합니다.");
-			return false;
-		}
+		return birthday;
 	}
 
-	public boolean validGenderChecker(String gender) {
-		for (GENDER g : GENDER.values()) {
-			if(g.getGender().equals(gender)) {
-				return true;
-			}
+	public String validGenderChecker(String gender) {
+		List<String> genderList = List.of("여자", "남자");
+		if(!genderList.contains(gender)) {
+			throw new BadRequestException(ErrorMessage.INVALID_GENDER.getMessage());
 		}
-			System.out.println("️️⚠️ 성별은 '여자' 혹은 '남자' 중 하나여야 합니다.");
-			return false;
+		return gender;
 	}
 
-	public boolean nonEmptyChecker(String content) {
+	public String nonEmptyChecker(String content) {
 		if(content.isEmpty()) {
-			System.out.println("⚠️ 값을 입력해주세요.");
-			return false;
+			throw new BadRequestException(ErrorMessage.EMPTY_INPUT.getMessage());
 		}
 		if(content.contains(" ")) {
-			System.out.println("⚠️ 입력에 공백이 포함될 수 없습니다.");
-			return false;
+			throw new BadRequestException(ErrorMessage.EMPTY_INPUT.getMessage());
 		}
-		return true;
+		return content;
 	}
 
 }
