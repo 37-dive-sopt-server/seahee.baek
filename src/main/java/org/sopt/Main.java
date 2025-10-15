@@ -6,39 +6,46 @@ import java.util.Scanner;
 
 import org.sopt.controller.MemberController;
 import org.sopt.domain.Member;
-import org.sopt.repository.MemoryMemberRepository;
-import org.sopt.service.MemberServiceImpl;
+import org.sopt.util.view.MemberView;
 
 public class Main {
 	public static void main(String[] args) {
 
-		MemoryMemberRepository memberRepository = new MemoryMemberRepository();
-		MemberServiceImpl memberService = new MemberServiceImpl();
+		MemberView memberView = new MemberView();
 		MemberController memberController = new MemberController();
 
 		Scanner scanner = new Scanner(System.in);
 
 		while (true) {
-			System.out.println("\n✨ --- DIVE SOPT 회원 관리 서비스 --- ✨");
-			System.out.println("---------------------------------");
-			System.out.println("1️⃣. 회원 등록 ➕");
-			System.out.println("2️⃣. ID로 회원 조회 🔍");
-			System.out.println("3️⃣. 전체 회원 조회 📋");
-			System.out.println("4️⃣. 종료 🚪");
-			System.out.println("---------------------------------");
-			System.out.print("메뉴를 선택하세요: ");
-
-			String choice = scanner.nextLine();
+			memberView.printAllMenuPrompt();
+			String choice = memberView.printMenuSelectPrompt();
 
 			switch (choice) {
 				case "1":
-					System.out.print("등록할 회원 이름을 입력하세요: ");
-					String name = scanner.nextLine();
-					if (name.trim().isEmpty()) {
-						System.out.println("⚠️ 이름을 입력해주세요.");
-						continue;
+
+					String name = memberView.printNamePrompt();
+					while(!memberController.nonEmptyChecker(name)) {
+						name = memberView.printNamePrompt();
 					}
-					Long createdId = memberController.createMember(name);
+
+					String birthday = memberView.printBirthdayPrompt();
+					while(!memberController.validAgeChecker(birthday)) {
+						birthday = memberView.printBirthdayPrompt();
+					}
+
+					String email = memberView.printEmailPrompt();
+					while(!memberController.validEmailChecker(email)) {
+						email = memberView.printEmailPrompt();
+					}
+
+					String gender = memberView.printGenderPrompt();
+					while(!memberController.validGenderChecker(gender)) {
+						gender = memberView.printGenderPrompt();
+					}
+
+
+					Long createdId = memberController.createMember(name, birthday, email, gender);
+
 					if (createdId != null) {
 						System.out.println("✅ 회원 등록 완료 (ID: " + createdId + ")");
 					} else {
@@ -79,6 +86,14 @@ public class Main {
 				default:
 					System.out.println("🚫 잘못된 메뉴 선택입니다. 다시 시도해주세요.");
 			}
+		}
+	}
+	private static String nonEmptyChecker(Scanner scanner, String content) {
+		while (true) {
+			System.out.println(content);
+			String input = scanner.nextLine().trim();
+			if (!input.isEmpty()) return input;
+			System.out.println("⚠️ 값을 입력해주세요.");
 		}
 	}
 }
