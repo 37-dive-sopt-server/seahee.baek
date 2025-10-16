@@ -13,9 +13,6 @@ public class MemberController {
 	private final MemberServiceImpl memberService = new MemberServiceImpl();
 
 	public Long createMember(String name, String birthdayString, String email, String genderString) {
-		LocalDate birthday = LocalDate.parse(birthdayString);
-		GENDER gender = GENDER.fromString(genderString);
-
 		return memberService.join(name, birthday, email, gender);
 	}
 

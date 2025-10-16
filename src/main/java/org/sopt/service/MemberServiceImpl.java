@@ -16,7 +16,9 @@ public class MemberServiceImpl implements MemberService {
 	private final MemoryMemberRepository memberRepository = new MemoryMemberRepository();
 	private static long sequence = 1L;
 
-	public Long join(String name, LocalDate birthday, String email, GENDER gender) {
+	public Long join(String name, String birthdayString, String email, String genderString) {
+		LocalDate birthday = LocalDate.parse(birthdayString);
+		GENDER gender = GENDER.fromString(genderString);
 		if(findByEmail(email).isPresent()) {
 			throw new DuplicatedEmailException(ErrorMessage.EMAIL_DUPLICATE.getMessage());
 		}
