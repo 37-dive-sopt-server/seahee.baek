@@ -32,7 +32,7 @@ public class Main {
 						String gender = validGenderChecker(memberView.printGenderPrompt());
 
 						Long createdId = memberController.createMember(name, birthday, email, gender);
-						System.out.println("✅ 회원 등록 완료 (ID: " + createdId + ")");
+						memberView.printCreateSuccessPrompt(createdId);
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 						break;
@@ -69,7 +69,7 @@ public class Main {
 					try {
 						Long deleteMemberId = validIdChecker(memberView.printDeleteMemberPrompt());
 						memberController.deleteMember(deleteMemberId);
-						System.out.println("✅ 멤버 삭제를 완료하였습니다!");
+						memberView.printDeleteSuccessPrompt();
 					} catch (NotFoundException e) {
 						System.out.println(e.getMessage());
 					}
