@@ -1,15 +1,11 @@
 package org.sopt.controller;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
-import org.sopt.exception.BadRequestException;
-import org.sopt.exception.InvalidAgeException;
-import org.sopt.exception.util.ErrorMessage;
 import org.sopt.service.MemberServiceImpl;
 
 public class MemberController {
