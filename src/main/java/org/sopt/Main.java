@@ -1,11 +1,14 @@
 package org.sopt;
 
+import static org.sopt.util.validator.MemberInputValidator.*;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 import org.sopt.controller.MemberController;
 import org.sopt.domain.Member;
+import org.sopt.exception.NotFoundException;
 import org.sopt.util.view.MemberView;
 
 public class Main {
@@ -23,14 +26,15 @@ public class Main {
 			switch (choice) {
 				case "1":
 					try {
-						String name = memberController.nonEmptyChecker(memberView.printNamePrompt());
-						String birthday = memberController.validAgeChecker(memberView.printBirthdayPrompt());
-						String email = memberController.validEmailChecker(memberView.printEmailPrompt());
-						String gender = memberController.validGenderChecker(memberView.printGenderPrompt());
+						String name = nonEmptyChecker(memberView.printNamePrompt());
+						String birthday = validAgeChecker(memberView.printBirthdayPrompt());
+						String email = validEmailChecker(memberView.printEmailPrompt());
+						String gender = validGenderChecker(memberView.printGenderPrompt());
 
 						Long createdId = memberController.createMember(name, birthday, email, gender);
 						System.out.println("✅ 회원 등록 완료 (ID: " + createdId + ")");
 					} catch (Exception e) {
+						System.out.println(e.getMessage());
 						break;
 					}
 					break;
@@ -62,20 +66,21 @@ public class Main {
 					}
 					break;
 				case "4":
+					try {
+						Long deleteMemberId = validIdChecker(memberView.printDeleteMemberPrompt());
+						memberController.deleteMember(deleteMemberId);
+						System.out.println("✅ 멤버 삭제를 완료하였습니다!");
+					} catch (NotFoundException e) {
+						System.out.println(e.getMessage());
+					}
+					break;
+				case "5":
 					System.out.println("👋 서비스를 종료합니다. 안녕히 계세요!");
 					scanner.close();
 					return;
 				default:
 					System.out.println("🚫 잘못된 메뉴 선택입니다. 다시 시도해주세요.");
 			}
-		}
-	}
-	private static String nonEmptyChecker(Scanner scanner, String content) {
-		while (true) {
-			System.out.println(content);
-			String input = scanner.nextLine().trim();
-			if (!input.isEmpty()) return input;
-			System.out.println("⚠️ 값을 입력해주세요.");
 		}
 	}
 }

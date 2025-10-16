@@ -12,7 +12,8 @@ public class MemberView {
 		System.out.println("1️⃣. 회원 등록 ➕");
 		System.out.println("2️⃣. ID로 회원 조회 🔍");
 		System.out.println("3️⃣. 전체 회원 조회 📋");
-		System.out.println("4️⃣. 종료 🚪");
+		System.out.println("4️⃣. ID로 회원 삭제 ❌");
+		System.out.println("5️⃣. 종료 🚪");
 		System.out.println("---------------------------------");
 	}
 
@@ -40,4 +41,10 @@ public class MemberView {
 		System.out.print("성별을 입력해주세요(e.g. 남자 or 여자): ");
 		return(scanner.nextLine().trim());
 	}
+
+	public String printDeleteMemberPrompt() {
+		System.out.print("삭제하고 싶은 회원의 ID를 입력하세요: ");
+		return(scanner.nextLine().trim());
+	}
+
 }

@@ -13,4 +13,5 @@ public interface MemberService {
 	Optional<Member> findOne(Long memberId);
 	List<Member> findAllMembers();
 	Optional<Member> findByEmail(String email);
+	void deleteMemberById(Long memberId);
 }

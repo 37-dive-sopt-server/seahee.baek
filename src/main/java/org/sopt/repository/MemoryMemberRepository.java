@@ -33,4 +33,6 @@ public class MemoryMemberRepository {
 			.filter(member -> member.getEmail().equals(email))
 			.findFirst();
 	}
+
+	public void deleteById(Long memberId) { store.remove(memberId); }
 }

@@ -8,6 +8,9 @@ public enum ErrorMessage {
 	NOT_ALLOWED_SPACE("⚠️ 입력에 공백이 포함될 수 없습니다."),
 	EMPTY_INPUT("⚠️ 값을 입력해주세요."),
 	INVALID_GENDER("⚠️ 성별은 '여자' 혹은 '남자' 중 하나여야 합니다."),
+	INVALID_NUMBER("❌ 유효하지 않은 ID 형식입니다. 숫자를 입력해주세요."),
+	MEMBER_NOT_FOUND("❌ ID에 해당하는 멤버가 저장되어 있지 않습니다."),
+
 	;
 
 	private final String message;

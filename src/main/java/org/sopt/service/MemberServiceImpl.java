@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
 import org.sopt.exception.DuplicatedEmailException;
+import org.sopt.exception.NotFoundException;
 import org.sopt.exception.util.ErrorMessage;
 import org.sopt.repository.MemoryMemberRepository;
 
@@ -37,4 +38,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	public Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
+
+	public void deleteMemberById(Long memberId) {
+		System.out.println(findOne(memberId));
+		if(findOne(memberId).isEmpty()) {
+			throw new NotFoundException(ErrorMessage.MEMBER_NOT_FOUND.getMessage());
+		}
+		memberRepository.deleteById(memberId);
+	}
 }
