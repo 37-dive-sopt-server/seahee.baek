@@ -47,4 +47,11 @@ public class MemberView {
 		return scanner.nextLine().trim();
 	}
 
+	public void printCreateSuccessPrompt(Long createdId) {
+		System.out.println("✅ 회원 등록 완료 (ID: " + createdId + ")");
+	}
+
+	public void printDeleteSuccessPrompt() {
+		System.out.println("✅ 멤버 삭제를 완료하였습니다!");
+	}
 }

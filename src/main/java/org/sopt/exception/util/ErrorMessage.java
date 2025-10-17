@@ -11,7 +11,10 @@ public enum ErrorMessage {
 	INVALID_NUMBER("❌ 유효하지 않은 ID 형식입니다. 숫자를 입력해주세요."),
 	MEMBER_NOT_FOUND("❌ ID에 해당하는 멤버가 저장되어 있지 않습니다."),
 
-	;
+	FILE_CREATE_FAILED("❌ 파일 생성에 실패하였습니다."),
+	FILE_READ_FAILED("❌ 파일 전체 읽어들이기에 실패하였습니다."),
+	FILE_WRITE_FAILED("❌ 파일 작성에 실패하였습니다."),
+	FILE_SAVE_FAILED("❌ 파일 저장에 실패하였습니다.");
 
 	private final String message;
 

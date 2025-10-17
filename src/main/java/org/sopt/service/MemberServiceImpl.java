@@ -9,12 +9,15 @@ import org.sopt.domain.enums.GENDER;
 import org.sopt.exception.DuplicatedEmailException;
 import org.sopt.exception.NotFoundException;
 import org.sopt.exception.util.ErrorMessage;
-import org.sopt.repository.MemoryMemberRepository;
+import org.sopt.repository.MemberRepository;
 
 public class MemberServiceImpl implements MemberService {
 
-	private final MemoryMemberRepository memberRepository = new MemoryMemberRepository();
-	private static long sequence = 1L;
+	private final MemberRepository memberRepository;
+
+	public MemberServiceImpl(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+	}
 
 	public Long join(String name, String birthdayString, String email, String genderString) {
 		LocalDate birthday = LocalDate.parse(birthdayString);
@@ -22,13 +25,12 @@ public class MemberServiceImpl implements MemberService {
 		if(findByEmail(email).isPresent()) {
 			throw new DuplicatedEmailException(ErrorMessage.EMAIL_DUPLICATE.getMessage());
 		}
-		Member member = new Member(sequence++, name, birthday, email, gender);
 		try {
-			memberRepository.save(member);
+			Member createdMember = memberRepository.saveMember(name, birthday, email, gender);
+			return createdMember.getId();
 		} catch (Exception e) {
 			throw new RuntimeException("❌ 회원 등록 실패");
 		}
-		return member.getId();
 	}
 
 	public Optional<Member> findOne(Long memberId) {

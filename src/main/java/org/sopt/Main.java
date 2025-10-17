@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.sopt.config.AppConfig;
 import org.sopt.controller.MemberController;
 import org.sopt.domain.Member;
 import org.sopt.exception.NotFoundException;
@@ -15,7 +16,9 @@ public class Main {
 	public static void main(String[] args) {
 
 		MemberView memberView = new MemberView();
-		MemberController memberController = new MemberController();
+
+		AppConfig appConfig = new AppConfig();
+		MemberController memberController = appConfig.memberController();
 
 		Scanner scanner = new Scanner(System.in);
 

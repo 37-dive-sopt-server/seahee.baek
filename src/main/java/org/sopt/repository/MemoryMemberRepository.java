@@ -1,5 +1,6 @@
 package org.sopt.repository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,13 +8,15 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.sopt.domain.Member;
+import org.sopt.domain.enums.GENDER;
 
-public class MemoryMemberRepository {
+public class MemoryMemberRepository implements MemberRepository{
 
 	private static final Map<Long, Member> store = new HashMap<>();
+	private static Long finalId = 1L;
 
-	public Member save(Member member) {
-
+	public Member saveMember(String name, LocalDate birthday, String email, GENDER gender) {
+		Member member = new Member(finalId++, name, birthday, email, gender);
 		store.put(member.getId(), member);
 		return member;
 
