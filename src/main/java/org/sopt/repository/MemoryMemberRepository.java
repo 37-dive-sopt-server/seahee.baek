@@ -9,7 +9,9 @@ import java.util.Optional;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class MemoryMemberRepository implements MemberRepository{
 
 	private static final Map<Long, Member> store = new HashMap<>();

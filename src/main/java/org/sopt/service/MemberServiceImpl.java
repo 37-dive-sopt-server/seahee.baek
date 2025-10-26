@@ -3,51 +3,77 @@ package org.sopt.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.sopt.controller.member.dto.MemberAllInfoResponse;
+import org.sopt.controller.member.dto.MemberCreateRequest;
+import org.sopt.controller.member.dto.MemberInfoResponse;
 import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
-import org.sopt.exception.DuplicatedEmailException;
-import org.sopt.exception.NotFoundException;
-import org.sopt.exception.util.ErrorMessage;
+import org.sopt.exception.MyException;
+import org.sopt.exception.code.MemberErrorCode;
 import org.sopt.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MemberServiceImpl implements MemberService {
 
-	private final MemberRepository memberRepository;
+	@Autowired
+	private MemberRepository memberRepository;
 
 	public MemberServiceImpl(MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
 	}
 
-	public Long join(String name, String birthdayString, String email, String genderString) {
-		LocalDate birthday = LocalDate.parse(birthdayString);
-		GENDER gender = GENDER.fromString(genderString);
-		if(findByEmail(email).isPresent()) {
-			throw new DuplicatedEmailException(ErrorMessage.EMAIL_DUPLICATE.getMessage());
+	public MemberInfoResponse join(MemberCreateRequest request) {
+		if(findByEmail(request.email()).isPresent()) {
+			throw new MyException(MemberErrorCode.EMAIL_DUPLICATE);
 		}
-		try {
-			Member createdMember = memberRepository.saveMember(name, birthday, email, gender);
-			return createdMember.getId();
-		} catch (Exception e) {
-			throw new RuntimeException("❌ 회원 등록 실패");
-		}
+		Member member = memberRepository.saveMember(request.name(), request.birthday(), request.email(), request.gender());
+		return MemberInfoResponse.of(
+			member.getId(),
+			member.getName(),
+			member.getBirthday(),
+			member.getEmail(),
+			member.getGender()
+		);
 	}
 
-	public Optional<Member> findOne(Long memberId) {
-		return memberRepository.findById(memberId);
+	public MemberInfoResponse getMemberInfoResponse(Long memberId) {
+		Member member = findMember(memberId);
+		return MemberInfoResponse.of(
+			member.getId(),
+			member.getName(),
+			member.getBirthday(),
+			member.getEmail(),
+			member.getGender()
+		);
 	}
 
-	public List<Member> findAllMembers() {
-		return memberRepository.findAll();
+	public MemberAllInfoResponse findAllMembers() {
+		List<MemberInfoResponse> memberList = memberRepository.findAll()
+			.stream()
+			.map(member -> MemberInfoResponse.of(
+				member.getId(),
+				member.getName(),
+				member.getBirthday(),
+				member.getEmail(),
+				member.getGender()
+			))
+			.collect(Collectors.toList());
+		return new MemberAllInfoResponse(memberList);
 	}
 
 	public Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
 
 	public void deleteMemberById(Long memberId) {
-		System.out.println(findOne(memberId));
-		if(findOne(memberId).isEmpty()) {
-			throw new NotFoundException(ErrorMessage.MEMBER_NOT_FOUND.getMessage());
-		}
-		memberRepository.deleteById(memberId);
+		Member member = findMember(memberId);
+		memberRepository.deleteById(member.getId());
+	}
+
+	private Member findMember(Long memberId) {
+		return memberRepository.findById(memberId)
+			.orElseThrow(() -> new MyException(MemberErrorCode.MEMBER_NOT_FOUND));
 	}
 }

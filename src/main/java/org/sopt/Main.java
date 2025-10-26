@@ -1,89 +1,11 @@
 package org.sopt;
 
-import static org.sopt.util.validator.MemberInputValidator.*;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
-
-import org.sopt.config.AppConfig;
-import org.sopt.controller.MemberController;
-import org.sopt.domain.Member;
-import org.sopt.exception.NotFoundException;
-import org.sopt.util.view.MemberView;
-
+@SpringBootApplication
 public class Main {
 	public static void main(String[] args) {
-
-		MemberView memberView = new MemberView();
-
-		AppConfig appConfig = new AppConfig();
-		MemberController memberController = appConfig.memberController();
-
-		Scanner scanner = new Scanner(System.in);
-
-		while (true) {
-			memberView.printAllMenuPrompt();
-			String choice = memberView.printMenuSelectPrompt();
-
-			switch (choice) {
-				case "1":
-					try {
-						String name = nonEmptyChecker(memberView.printNamePrompt());
-						String birthday = validAgeChecker(memberView.printBirthdayPrompt());
-						String email = validEmailChecker(memberView.printEmailPrompt());
-						String gender = validGenderChecker(memberView.printGenderPrompt());
-
-						Long createdId = memberController.createMember(name, birthday, email, gender);
-						memberView.printCreateSuccessPrompt(createdId);
-					} catch (Exception e) {
-						System.out.println(e.getMessage());
-						break;
-					}
-					break;
-				case "2":
-					System.out.print("조회할 회원 ID를 입력하세요: ");
-					try {
-						Long id = Long.parseLong(scanner.nextLine());
-						Optional<Member> foundMember = memberController.findMemberById(id);
-						if (foundMember.isPresent()) {
-							System.out.println("✅ 조회된 회원: ID=" + foundMember.get().getId() + ", 이름=" + foundMember.get().getName());
-						} else {
-							System.out.println("⚠️ 해당 ID의 회원을 찾을 수 없습니다.");
-						}
-					} catch (NumberFormatException e) {
-						System.out.println("❌ 유효하지 않은 ID 형식입니다. 숫자를 입력해주세요.");
-					}
-					break;
-				case "3":
-					List<Member> allMembers = memberController.getAllMembers();
-					if (allMembers.isEmpty()) {
-						System.out.println("ℹ️ 등록된 회원이 없습니다.");
-					}
-					else {
-						System.out.println("--- 📋 전체 회원 목록 📋 ---");
-						for (Member member : allMembers) {
-							System.out.println("👤 ID=" + member.getId() + ", 이름=" + member.getName());
-						}
-						System.out.println("--------------------------");
-					}
-					break;
-				case "4":
-					try {
-						Long deleteMemberId = validIdChecker(memberView.printDeleteMemberPrompt());
-						memberController.deleteMember(deleteMemberId);
-						memberView.printDeleteSuccessPrompt();
-					} catch (NotFoundException e) {
-						System.out.println(e.getMessage());
-					}
-					break;
-				case "5":
-					System.out.println("👋 서비스를 종료합니다. 안녕히 계세요!");
-					scanner.close();
-					return;
-				default:
-					System.out.println("🚫 잘못된 메뉴 선택입니다. 다시 시도해주세요.");
-			}
-		}
+		SpringApplication.run(Main.class, args);
 	}
 }
