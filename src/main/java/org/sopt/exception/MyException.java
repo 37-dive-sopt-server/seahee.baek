@@ -1,7 +1,14 @@
 package org.sopt.exception;
 
+import org.sopt.exception.base.BaseErrorCode;
+
 public class MyException extends RuntimeException {
-	public MyException(String message) {
-		super(message);
+	private final BaseErrorCode baseErrorCode;
+
+	public MyException(BaseErrorCode baseErrorCode) {
+		super(baseErrorCode.getMessage());
+		this.baseErrorCode = baseErrorCode;
 	}
+
+	public BaseErrorCode getBaseErrorCode() { return baseErrorCode; }
 }
