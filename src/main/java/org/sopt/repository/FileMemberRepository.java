@@ -14,8 +14,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
-import org.sopt.exception.FileIOException;
-import org.sopt.exception.util.ErrorMessage;
+import org.sopt.exception.MyException;
+import org.sopt.exception.code.FileErrorCode;
 
 public class FileMemberRepository implements MemberRepository {
 
@@ -40,7 +40,7 @@ public class FileMemberRepository implements MemberRepository {
 			));
 			writer.newLine();
 		} catch (Exception e) {
-			throw new FileIOException(ErrorMessage.FILE_WRITE_FAILED.getMessage());
+			throw new MyException(FileErrorCode.FILE_WRITE_FAILED);
 		}
 		return member;
 	}
@@ -94,7 +94,7 @@ public class FileMemberRepository implements MemberRepository {
 				members.add(new Member(id, name, birthday, email, gender));
 			}
 		} catch (Exception e) {
-			throw new FileIOException(ErrorMessage.FILE_READ_FAILED.getMessage());
+			throw new MyException(FileErrorCode.FILE_READ_FAILED);
 		}
 		return members;
 	}
@@ -115,7 +115,7 @@ public class FileMemberRepository implements MemberRepository {
 				writer.newLine();
 			}
 		} catch (Exception e) {
-			throw new FileIOException(ErrorMessage.FILE_SAVE_FAILED.getMessage());
+			throw new MyException(FileErrorCode.FILE_SAVE_FAILED);
 		}
 	}
 }

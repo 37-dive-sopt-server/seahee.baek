@@ -3,9 +3,10 @@ package org.sopt.config;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.sopt.controller.MemberController;
-import org.sopt.exception.FileIOException;
-import org.sopt.exception.util.ErrorMessage;
+import org.sopt.controller.member.MemberController;
+import org.sopt.exception.MyException;
+import org.sopt.exception.code.FileErrorCode;
+import org.sopt.exception.code.MemberErrorCode;
 import org.sopt.repository.FileMemberRepository;
 import org.sopt.repository.MemberRepository;
 import org.sopt.repository.MemoryMemberRepository;
@@ -45,7 +46,7 @@ public class AppConfig {
 			try {
 				Files.createFile(DATA_FILE_PATH);
 			} catch (Exception e) {
-				throw new FileIOException(ErrorMessage.FILE_CREATE_FAILED.getMessage());
+				throw new MyException(FileErrorCode.FILE_CREATE_FAILED);
 			}
 		}
 	}
