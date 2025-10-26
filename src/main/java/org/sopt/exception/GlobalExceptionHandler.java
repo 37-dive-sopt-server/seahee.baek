@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleException(Exception e) {
 		ErrorResponse response = ErrorResponse.of(
 			HttpStatus.INTERNAL_SERVER_ERROR,
-			"서버 내부에서 오류가 발생하였습니다."
+			"서버 내부에서 문제가 발생하였습니다. exception: " + e.getMessage()
 		);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.body(response);
