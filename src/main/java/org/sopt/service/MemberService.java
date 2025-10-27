@@ -1,6 +1,5 @@
 package org.sopt.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.sopt.controller.member.dto.MemberAllInfoResponse;
@@ -15,4 +14,5 @@ public interface MemberService {
 	MemberAllInfoResponse findAllMembers();
 	Optional<Member> findByEmail(String email);
 	void deleteMemberById(Long memberId);
+
 }

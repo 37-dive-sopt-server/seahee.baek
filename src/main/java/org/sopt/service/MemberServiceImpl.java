@@ -1,6 +1,5 @@
 package org.sopt.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,20 +8,20 @@ import org.sopt.controller.member.dto.MemberAllInfoResponse;
 import org.sopt.controller.member.dto.MemberCreateRequest;
 import org.sopt.controller.member.dto.MemberInfoResponse;
 import org.sopt.domain.Member;
-import org.sopt.domain.enums.GENDER;
+
 import org.sopt.exception.MyException;
 import org.sopt.exception.code.MemberErrorCode;
 import org.sopt.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberServiceImpl implements MemberService {
 
-	@Autowired
-	private MemberRepository memberRepository;
+	private final MemberRepository memberRepository;
 
-	public MemberServiceImpl(MemberRepository memberRepository) {
+	public MemberServiceImpl(@Qualifier("fileRepo") MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
 	}
 

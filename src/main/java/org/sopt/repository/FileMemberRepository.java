@@ -16,21 +16,28 @@ import org.sopt.domain.Member;
 import org.sopt.domain.enums.GENDER;
 import org.sopt.exception.MyException;
 import org.sopt.exception.code.FileErrorCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
+@Repository
+@Qualifier("fileRepo")
 public class FileMemberRepository implements MemberRepository {
 
-	private final Path data_file;
-	private final AtomicLong nextId;
+	private final Path dataFile;
+	private final AtomicLong nextId = new AtomicLong(1);
 
-	public FileMemberRepository(Path data_file) {
-		this.data_file = data_file;
-		this.nextId = new AtomicLong(getFinalId() + 1);
+	@Autowired
+	public FileMemberRepository(Path dataFile) {
+		this.dataFile = dataFile;
+		initStorage();
+		this.nextId.set(getFinalId() + 1);
 	}
 
 	@Override
 	public synchronized Member saveMember(String name, LocalDate birthday, String email, GENDER gender) {
 		Member member = new Member(nextId.getAndIncrement(), name, birthday, email, gender);
-		try (BufferedWriter writer = Files.newBufferedWriter(data_file, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+		try (BufferedWriter writer = Files.newBufferedWriter(dataFile, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
 			writer.write(String.join(",",
 				String.valueOf(member.getId()),
 				member.getName(),
@@ -82,7 +89,7 @@ public class FileMemberRepository implements MemberRepository {
 	private List<Member> readAll() {
 		List<Member> members = new ArrayList<>();
 
-		try (BufferedReader reader = Files.newBufferedReader(data_file, StandardCharsets.UTF_8)) {
+		try (BufferedReader reader = Files.newBufferedReader(dataFile, StandardCharsets.UTF_8)) {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				String[] t = line.split(",", -1);
@@ -101,7 +108,7 @@ public class FileMemberRepository implements MemberRepository {
 
 	private void saveAll(List<Member> members) {
 		try (BufferedWriter writer = Files.newBufferedWriter(
-			data_file, StandardCharsets.UTF_8,
+			dataFile, StandardCharsets.UTF_8,
 			StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 
 			for (Member m : members) {
@@ -116,6 +123,17 @@ public class FileMemberRepository implements MemberRepository {
 			}
 		} catch (Exception e) {
 			throw new MyException(FileErrorCode.FILE_SAVE_FAILED);
+		}
+	}
+
+	private void initStorage() {
+		try {
+			Files.createDirectories(dataFile.getParent());
+			if (Files.notExists(dataFile)) {
+				Files.createFile(dataFile);
+			}
+		} catch (Exception e) {
+			throw new MyException(FileErrorCode.FILE_CREATE_FAILED);
 		}
 	}
 }
