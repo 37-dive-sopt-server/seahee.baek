@@ -15,4 +15,9 @@ public record ErrorResponse(
 	public static ErrorResponse of(HttpStatus httpStatus, String message) {
 		return new ErrorResponse(httpStatus.value(), message);
 	}
+
+	public static ErrorResponse of(BaseErrorCode errorCode, Object detail) {
+		return new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getMessage() + (detail != null ? ": " + detail : "")
+		);
+	}
 }
