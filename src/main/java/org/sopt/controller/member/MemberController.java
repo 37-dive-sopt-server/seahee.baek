@@ -1,5 +1,7 @@
 package org.sopt.controller.member;
 
+import static org.sopt.util.validator.MemberInputValidator.*;
+
 import org.sopt.common.response.SuccessResponse;
 import org.sopt.controller.member.dto.MemberAllInfoResponse;
 import org.sopt.controller.member.dto.MemberCreateRequest;
@@ -29,6 +31,11 @@ public class MemberController {
 	@PostMapping("/users")
 	public ResponseEntity<SuccessResponse<MemberInfoResponse>> createMember(
 		@RequestBody MemberCreateRequest memberCreateRequest) {
+
+		nonEmptyChecker(memberCreateRequest.name());
+		validAgeChecker(memberCreateRequest.birthday());
+		validEmailChecker(memberCreateRequest.email());
+
 		MemberInfoResponse response = memberService.join(memberCreateRequest);
 		System.out.println(memberCreateRequest);
 		return ResponseEntity.ok()
