@@ -12,7 +12,7 @@ public interface MemberService {
 	MemberInfoResponse join(MemberCreateRequest memberCreateRequest);
 	MemberInfoResponse getMemberInfoResponse(Long memberId);
 	MemberAllInfoResponse findAllMembers();
-	Optional<Member> findByEmail(String email);
+	Member findById(Long id);
 	void deleteMemberById(Long memberId);
 
 }

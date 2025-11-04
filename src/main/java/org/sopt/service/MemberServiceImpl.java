@@ -11,9 +11,8 @@ import org.sopt.domain.Member;
 
 import org.sopt.exception.MyException;
 import org.sopt.exception.code.MemberErrorCode;
-import org.sopt.repository.MemberRepository;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.sopt.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,7 +20,7 @@ public class MemberServiceImpl implements MemberService {
 
 	private final MemberRepository memberRepository;
 
-	public MemberServiceImpl(@Qualifier("fileRepo") MemberRepository memberRepository) {
+	public MemberServiceImpl(MemberRepository memberRepository) {
 		this.memberRepository = memberRepository;
 	}
 
@@ -29,7 +28,9 @@ public class MemberServiceImpl implements MemberService {
 		if(findByEmail(request.email()).isPresent()) {
 			throw new MyException(MemberErrorCode.EMAIL_DUPLICATE);
 		}
-		Member member = memberRepository.saveMember(request.name(), request.birthday(), request.email(), request.gender());
+		Member member = Member.create(request.name(), request.birthday(), request.email(), request.gender());
+		memberRepository.save(member);
+
 		return MemberInfoResponse.of(
 			member.getId(),
 			member.getName(),
@@ -40,7 +41,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	public MemberInfoResponse getMemberInfoResponse(Long memberId) {
-		Member member = findMember(memberId);
+		Member member = findById(memberId);
 		return MemberInfoResponse.of(
 			member.getId(),
 			member.getName(),
@@ -64,15 +65,15 @@ public class MemberServiceImpl implements MemberService {
 		return new MemberAllInfoResponse(memberList);
 	}
 
-	public Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
-
 	public void deleteMemberById(Long memberId) {
-		Member member = findMember(memberId);
+		Member member = findById(memberId);
 		memberRepository.deleteById(member.getId());
 	}
 
-	private Member findMember(Long memberId) {
+	public Member findById(Long memberId) {
 		return memberRepository.findById(memberId)
 			.orElseThrow(() -> new MyException(MemberErrorCode.MEMBER_NOT_FOUND));
 	}
+
+	private Optional<Member> findByEmail(String email) { return memberRepository.findByEmail(email); }
 }
