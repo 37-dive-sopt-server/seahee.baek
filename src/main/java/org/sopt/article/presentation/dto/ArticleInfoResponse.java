@@ -10,7 +10,8 @@ public record ArticleInfoResponse(
 	String content,
 	TAG tag,
 	LocalDateTime createdAt,
-	Long memberId
+	Long memberId,
+	String memberName
 ) {
 
 	public static ArticleInfoResponse of(
@@ -19,8 +20,9 @@ public record ArticleInfoResponse(
 		String content,
 		TAG tag,
 		LocalDateTime createdAt,
-		Long memberId
+		Long memberId,
+		String memberName
 	) {
-		return new ArticleInfoResponse(id, title, content, tag, createdAt, memberId);
+		return new ArticleInfoResponse(id, title, content, tag, createdAt, memberId, memberName);
 	}
 }
