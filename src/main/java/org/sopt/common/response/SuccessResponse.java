@@ -1,6 +1,6 @@
 package org.sopt.common.response;
 
-import org.sopt.exception.base.BaseSuccessCode;
+import org.sopt.common.exception.code.base.BaseSuccessCode;
 
 public record SuccessResponse<T>(
 	int status,
