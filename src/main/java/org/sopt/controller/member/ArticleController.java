@@ -4,6 +4,7 @@ import org.sopt.common.response.SuccessResponse;
 import org.sopt.controller.member.dto.ArticleAllInfoResponse;
 import org.sopt.controller.member.dto.ArticleCreateRequest;
 import org.sopt.controller.member.dto.ArticleInfoResponse;
+import org.sopt.controller.member.dto.SearchedArticlesResponse;
 import org.sopt.domain.Member;
 import org.sopt.exception.code.ArticleSuccessCode;
 import org.sopt.service.ArticleServiceImpl;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -48,5 +50,19 @@ public class ArticleController {
 		ArticleAllInfoResponse response = articleService.findAll();
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(ArticleSuccessCode.ARTICLE_GET_SUCCESS, response));
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<SuccessResponse<SearchedArticlesResponse>> searchArticle(
+		@RequestParam(required = false) String searchWord,
+		@RequestParam(required = false) String memberName,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		SearchedArticlesResponse response = articleService.search(searchWord, memberName, page, size);
+		return ResponseEntity.ok()
+			.body(SuccessResponse.of(ArticleSuccessCode.ARTICLE_SEARCH_SUCCESS, response));
+
+
 	}
 }
