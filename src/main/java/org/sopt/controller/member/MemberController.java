@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/users")
 public class MemberController {
 
 	@Autowired
@@ -28,7 +30,7 @@ public class MemberController {
 		this.memberService = memberService;
 	}
 
-	@PostMapping("/users")
+	@PostMapping
 	public ResponseEntity<SuccessResponse<MemberInfoResponse>> createMember(
 		@RequestBody MemberCreateRequest memberCreateRequest) {
 
@@ -42,7 +44,7 @@ public class MemberController {
 			.body(SuccessResponse.of(MemberSuccessCode.MEMBER_CREATE_SUCCESS, response));
 	}
 
-	@GetMapping("/users/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<SuccessResponse<MemberInfoResponse>> findMemberById(
 		@PathVariable  Long id) {
 		MemberInfoResponse response = memberService.getMemberInfoResponse(id);
@@ -50,15 +52,16 @@ public class MemberController {
 			.body(SuccessResponse.of(MemberSuccessCode.MEMBER_GET_SUCCESS, response));
 	}
 
-	@GetMapping("/users")
+	@GetMapping
 	public ResponseEntity<SuccessResponse<MemberAllInfoResponse>> getAllMembers() {
 		MemberAllInfoResponse response = memberService.findAllMembers();
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(MemberSuccessCode.MEMBER_ALL_GET_SUCCESS, response));
 	}
 
-	@DeleteMapping("/users")
-	public ResponseEntity<SuccessResponse<Void>> deleteMember(Long id) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<SuccessResponse<Void>> deleteMember(
+		@PathVariable Long id) {
 		memberService.deleteMemberById(id);
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(MemberSuccessCode.MEMBER_DELETE_SUCCESS));
