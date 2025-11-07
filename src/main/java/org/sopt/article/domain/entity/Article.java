@@ -45,7 +45,7 @@ public class Article {
 	private Member member;
 
 	@Builder
-	public Article(TAG tag, String title, String content, Member member) {
+	private Article(TAG tag, String title, String content, Member member) {
 		this.tag = tag;
 		this.title = title;
 		this.content = content;
