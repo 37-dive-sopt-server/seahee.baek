@@ -2,11 +2,11 @@ package org.sopt.service;
 
 import java.util.List;
 
-import org.sopt.controller.member.dto.ArticleAllInfoResponse;
-import org.sopt.controller.member.dto.ArticleCreateRequest;
-import org.sopt.controller.member.dto.ArticleInfoResponse;
-import org.sopt.controller.member.dto.SearchedArticleInfoResponse;
-import org.sopt.controller.member.dto.SearchedArticlesResponse;
+import org.sopt.controller.article.dto.ArticleAllInfoResponse;
+import org.sopt.controller.article.dto.ArticleCreateRequest;
+import org.sopt.controller.article.dto.ArticleInfoResponse;
+import org.sopt.controller.article.dto.SearchedArticleInfoResponse;
+import org.sopt.controller.article.dto.SearchedArticlesResponse;
 import org.sopt.domain.Article;
 import org.sopt.domain.Member;
 import org.sopt.exception.MyException;

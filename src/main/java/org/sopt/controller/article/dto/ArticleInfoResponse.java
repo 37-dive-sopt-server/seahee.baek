@@ -1,4 +1,4 @@
-package org.sopt.controller.member.dto;
+package org.sopt.controller.article.dto;
 
 import java.time.LocalDateTime;
 

@@ -1,10 +1,10 @@
-package org.sopt.controller.member;
+package org.sopt.controller.article;
 
 import org.sopt.common.response.SuccessResponse;
-import org.sopt.controller.member.dto.ArticleAllInfoResponse;
-import org.sopt.controller.member.dto.ArticleCreateRequest;
-import org.sopt.controller.member.dto.ArticleInfoResponse;
-import org.sopt.controller.member.dto.SearchedArticlesResponse;
+import org.sopt.controller.article.dto.ArticleAllInfoResponse;
+import org.sopt.controller.article.dto.ArticleCreateRequest;
+import org.sopt.controller.article.dto.ArticleInfoResponse;
+import org.sopt.controller.article.dto.SearchedArticlesResponse;
 import org.sopt.domain.Member;
 import org.sopt.exception.code.ArticleSuccessCode;
 import org.sopt.service.ArticleServiceImpl;
