@@ -1,16 +1,12 @@
 package org.sopt.repository;
 
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import org.sopt.domain.Member;
-import org.sopt.domain.enums.GENDER;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberRepository {
-	Member saveMember(String name, LocalDate birthday, String email, GENDER gender);
-	Optional<Member> findById(Long id);
-	List<Member> findAll();
+public interface MemberRepository extends JpaRepository<Member, Long> {
+
 	Optional<Member> findByEmail(String email);
-	void deleteById(Long memberId);
+
 }
