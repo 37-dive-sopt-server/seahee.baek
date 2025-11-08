@@ -1,6 +1,6 @@
 package org.sopt.common.response;
 
-import org.sopt.exception.base.BaseErrorCode;
+import org.sopt.common.exception.code.base.BaseErrorCode;
 import org.springframework.http.HttpStatus;
 
 public record ErrorResponse(
