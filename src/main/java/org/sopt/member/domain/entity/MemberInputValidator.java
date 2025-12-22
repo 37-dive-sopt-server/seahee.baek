@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 import org.sopt.common.exception.MyException;
-import org.sopt.common.exception.code.MemberErrorCode;
+import org.sopt.member.exception.code.MemberErrorCode;
 
 public final class MemberInputValidator {
 	private MemberInputValidator() {}

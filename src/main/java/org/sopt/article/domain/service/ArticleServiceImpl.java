@@ -10,7 +10,7 @@ import org.sopt.article.presentation.dto.SearchedArticlesResponse;
 import org.sopt.article.domain.entity.Article;
 import org.sopt.member.domain.entity.Member;
 import org.sopt.common.exception.MyException;
-import org.sopt.common.exception.code.ArticleErrorCode;
+import org.sopt.article.exception.code.ArticleErrorCode;
 import org.sopt.article.domain.repository.ArticleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 

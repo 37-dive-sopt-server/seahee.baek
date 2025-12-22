@@ -10,7 +10,7 @@ import org.sopt.member.presentation.dto.MemberInfoResponse;
 import org.sopt.member.domain.entity.Member;
 
 import org.sopt.common.exception.MyException;
-import org.sopt.common.exception.code.MemberErrorCode;
+import org.sopt.member.exception.code.MemberErrorCode;
 
 import org.sopt.member.domain.repository.MemberRepository;
 import org.springframework.stereotype.Service;

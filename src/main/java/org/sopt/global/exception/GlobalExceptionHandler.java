@@ -1,8 +1,9 @@
-package org.sopt.common.exception;
+package org.sopt.global.exception;
 
+import org.sopt.common.exception.MyException;
 import org.sopt.common.response.ErrorResponse;
 import org.sopt.common.exception.code.base.BaseErrorCode;
-import org.sopt.common.exception.code.base.ErrorCode;
+import org.sopt.global.exception.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

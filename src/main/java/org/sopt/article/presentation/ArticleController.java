@@ -7,7 +7,7 @@ import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
 import org.sopt.article.presentation.dto.SearchedArticlesResponse;
 import org.sopt.member.domain.entity.Member;
-import org.sopt.common.exception.code.ArticleSuccessCode;
+import org.sopt.article.presentation.code.ArticleSuccessCode;
 import org.sopt.article.domain.service.ArticleServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
