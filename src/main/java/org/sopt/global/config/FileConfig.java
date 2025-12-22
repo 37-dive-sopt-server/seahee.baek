@@ -1,4 +1,4 @@
-package org.sopt.common.config;
+package org.sopt.global.config;
 
 import java.nio.file.Path;
 

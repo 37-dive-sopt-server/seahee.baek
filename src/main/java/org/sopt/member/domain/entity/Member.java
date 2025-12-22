@@ -27,6 +27,7 @@ public class Member {
 	private Long id;
 
 	private String name;
+	private String password;
 	private LocalDate birthday;
 	private String email;
 	private GENDER gender;
@@ -35,17 +36,19 @@ public class Member {
 	private List<Article> articles = new ArrayList<>();
 
 	@Builder
-	private Member(String name, LocalDate birthday, String email, GENDER gender, List<Article> articles) {
+	private Member(String name, String password, LocalDate birthday, String email, GENDER gender, List<Article> articles) {
 		this.name = name;
+		this.password = password;
 		this.birthday = birthday;
 		this.email = email;
 		this.gender = gender;
 		this.articles = articles;
 	}
 
-	public static Member create(final String name, final LocalDate birthday, final String email, final GENDER gender) {
+	public static Member create(final String name, final String password, final LocalDate birthday, final String email, final GENDER gender) {
 		return Member.builder()
 			.name(name)
+			.password(password)
 			.birthday(birthday)
 			.email(email)
 			.gender(gender)

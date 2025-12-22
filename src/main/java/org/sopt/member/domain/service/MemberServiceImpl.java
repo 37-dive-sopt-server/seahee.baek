@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 		if(findByEmail(request.email()).isPresent()) {
 			throw new MyException(MemberErrorCode.EMAIL_DUPLICATE);
 		}
-		Member member = Member.create(request.name(), request.birthday(), request.email(), request.gender());
+		Member member = Member.create(request.name(), request.password(), request.birthday(), request.email(), request.gender());
 		memberRepository.save(member);
 
 		return MemberInfoResponse.of(

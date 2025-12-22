@@ -15,4 +15,8 @@ public record SuccessResponse<T>(
 	public static <T> SuccessResponse<T> of(BaseSuccessCode baseSuccesscode, T data) {
 		return new SuccessResponse<>(baseSuccesscode.getHttpStatus().value(), baseSuccesscode.getMessage(), data);
 	}
+
+	public static <T> SuccessResponse<T> of(int status, String message, T data) {
+		return new SuccessResponse<>(status, message, data);
+	}
 }
