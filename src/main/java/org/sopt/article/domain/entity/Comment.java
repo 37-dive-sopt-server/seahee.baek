@@ -1,5 +1,7 @@
 package org.sopt.article.domain.entity;
 
+import java.time.LocalDateTime;
+
 import org.sopt.member.domain.entity.Member;
 
 import jakarta.persistence.Column;
@@ -28,6 +30,9 @@ public class Comment {
 
 	@Column
 	private String content;
+
+	@Column
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "articleId")

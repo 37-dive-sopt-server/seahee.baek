@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
 			.orElseThrow(()-> new MyException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		Comment comment = commentRepository.save(Comment.create(request.content(), article, member));
-		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
+		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName(), comment.getCreatedAt());
 	}
 
 	public CommentResponse updateComment(CommentRequest request, Long commentId, Long memberId) {
@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
 		Comment comment = throwExceptionOrCommentReturner(commentId, memberId);
 
 		comment.updateContent(request.content());
-		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
+		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName(), comment.getCreatedAt());
 	}
 
 	public void deleteComment(Long commentId, Long memberId) {
