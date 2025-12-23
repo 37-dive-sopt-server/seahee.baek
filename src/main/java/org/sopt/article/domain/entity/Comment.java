@@ -51,4 +51,8 @@ public class Comment {
 			.member(member)
 			.build();
 	}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
 }
