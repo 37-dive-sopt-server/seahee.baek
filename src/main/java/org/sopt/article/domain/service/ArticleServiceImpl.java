@@ -87,7 +87,8 @@ public class ArticleServiceImpl implements ArticleService {
 			article.getTag(),
 			article.getCreatedAt(),
 			article.getMember().getId(),
-			article.getMember().getName()
+			article.getMember().getName(),
+			article.getComments()
 		);
 	}
 }

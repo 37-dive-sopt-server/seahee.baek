@@ -1,7 +1,10 @@
 package org.sopt.article.presentation.dto;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
+import org.sopt.article.domain.entity.Comment;
 import org.sopt.article.domain.entity.enums.TAG;
 
 public record ArticleInfoResponse(
@@ -11,7 +14,8 @@ public record ArticleInfoResponse(
 	TAG tag,
 	LocalDateTime createdAt,
 	Long memberId,
-	String memberName
+	String memberName,
+	List<CommentResponse> comments
 ) {
 
 	public static ArticleInfoResponse of(
@@ -21,8 +25,17 @@ public record ArticleInfoResponse(
 		TAG tag,
 		LocalDateTime createdAt,
 		Long memberId,
-		String memberName
+		String memberName,
+		List<Comment> comments
 	) {
-		return new ArticleInfoResponse(id, title, content, tag, createdAt, memberId, memberName);
+		List<CommentResponse> commentResponses = comments == null ? Collections.emptyList() : comments.stream()
+			.map(c -> CommentResponse.of(
+				c.getId(),
+				c.getContent(),
+				c.getMember().getName(),
+				c.getCreatedAt()
+			))
+			.toList();
+		return new ArticleInfoResponse(id, title, content, tag, createdAt, memberId, memberName, commentResponses);
 	}
 }
