@@ -43,6 +43,12 @@ public class CommentServiceImpl implements CommentService {
 		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
 	}
 
+	public void deleteComment(Long commentId, Long memberId) {
+
+		Comment comment = throwExceptionOrCommentReturner(commentId, memberId);
+		commentRepository.delete(comment);
+	}
+
 	// 댓글 접근 권한을 체크하고 예외를 던지거나 comment 객체를 반환하는 메서드
 	private Comment throwExceptionOrCommentReturner(Long commentId, Long memberId) {
 		Comment comment = commentRepository.findById(commentId)
