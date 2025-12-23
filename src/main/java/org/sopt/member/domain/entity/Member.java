@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopt.article.domain.entity.Article;
+import org.sopt.article.domain.entity.Comment;
 import org.sopt.member.domain.entity.enums.GENDER;
 
 import jakarta.persistence.Entity;
@@ -35,14 +36,16 @@ public class Member {
 	@OneToMany(mappedBy = "member")
 	private List<Article> articles = new ArrayList<>();
 
+	@OneToMany(mappedBy = "member")
+	private List<Comment> comments = new ArrayList<>();
+
 	@Builder
-	private Member(String name, String password, LocalDate birthday, String email, GENDER gender, List<Article> articles) {
+	private Member(String name, String password, LocalDate birthday, String email, GENDER gender) {
 		this.name = name;
 		this.password = password;
 		this.birthday = birthday;
 		this.email = email;
 		this.gender = gender;
-		this.articles = articles;
 	}
 
 	public static Member create(final String name, final String password, final LocalDate birthday, final String email, final GENDER gender) {

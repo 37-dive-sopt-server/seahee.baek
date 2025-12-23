@@ -1,6 +1,8 @@
 package org.sopt.article.domain.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.sopt.member.domain.entity.Member;
 import org.sopt.article.domain.entity.enums.TAG;
@@ -14,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
@@ -43,6 +46,9 @@ public class Article {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "memberId")
 	private Member member;
+
+	@OneToMany(mappedBy = "article")
+	private List<Comment> comments = new ArrayList<>();
 
 	@Builder
 	private Article(TAG tag, String title, String content, Member member) {
