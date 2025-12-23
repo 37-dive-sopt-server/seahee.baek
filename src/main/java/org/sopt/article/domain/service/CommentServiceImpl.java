@@ -24,6 +24,13 @@ public class CommentServiceImpl implements CommentService {
 	private final MemberRepository memberRepository;
 	private final ArticleRepository articleRepository;
 
+	public CommentResponse findComment(Long commentId) {
+
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(()-> new MyException(CommentErrorCode.COMMENT_NOT_FOUND));
+		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName(), comment.getCreatedAt());
+	}
+
 	public CommentResponse createComment(CommentRequest request, Long articleId, Long memberId) {
 
 		Article article = articleRepository.findById(articleId)

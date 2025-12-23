@@ -4,6 +4,7 @@ import org.sopt.article.presentation.dto.CommentRequest;
 import org.sopt.article.presentation.dto.CommentResponse;
 
 public interface CommentService {
+	CommentResponse findComment(Long commentId);
 	CommentResponse createComment(CommentRequest request, Long articleId, Long memberId);
 	CommentResponse updateComment(CommentRequest request, Long commentId, Long memberId);
 	void deleteComment(Long commentId, Long memberId);
