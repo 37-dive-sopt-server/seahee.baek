@@ -1,14 +1,12 @@
 package org.sopt.article.domain.service;
 
-import java.util.Optional;
-
 import org.sopt.article.domain.entity.Article;
 import org.sopt.article.domain.entity.Comment;
 import org.sopt.article.domain.repository.ArticleRepository;
 import org.sopt.article.domain.repository.CommentRepository;
 import org.sopt.article.exception.code.ArticleErrorCode;
-import org.sopt.article.presentation.dto.CommentCreateRequest;
-import org.sopt.article.presentation.dto.CommentCreateResponse;
+import org.sopt.article.presentation.dto.CommentRequest;
+import org.sopt.article.presentation.dto.CommentResponse;
 import org.sopt.common.exception.MyException;
 import org.sopt.member.domain.entity.Member;
 import org.sopt.member.domain.repository.MemberRepository;
@@ -25,7 +23,7 @@ public class CommentServiceImpl implements CommentService {
 	private final MemberRepository memberRepository;
 	private final ArticleRepository articleRepository;
 
-	public CommentCreateResponse createComment(CommentCreateRequest request, Long articleId, Long memberId) {
+	public CommentResponse createComment(CommentRequest request, Long articleId, Long memberId) {
 
 		Article article = articleRepository.findById(articleId)
 			.orElseThrow(()-> new MyException(ArticleErrorCode.ARTICLE_NOT_FOUND));
@@ -33,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
 			.orElseThrow(()-> new MyException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		Comment comment = commentRepository.save(Comment.create(request.content(), article, member));
-		return CommentCreateResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
+		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
 	}
 
 }
