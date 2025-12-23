@@ -5,6 +5,7 @@ import org.sopt.article.domain.entity.Comment;
 import org.sopt.article.domain.repository.ArticleRepository;
 import org.sopt.article.domain.repository.CommentRepository;
 import org.sopt.article.exception.code.ArticleErrorCode;
+import org.sopt.article.exception.code.CommentErrorCode;
 import org.sopt.article.presentation.dto.CommentRequest;
 import org.sopt.article.presentation.dto.CommentResponse;
 import org.sopt.common.exception.MyException;
@@ -31,6 +32,19 @@ public class CommentServiceImpl implements CommentService {
 			.orElseThrow(()-> new MyException(MemberErrorCode.MEMBER_NOT_FOUND));
 
 		Comment comment = commentRepository.save(Comment.create(request.content(), article, member));
+		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
+	}
+
+	public CommentResponse updateComment(CommentRequest request, Long commentId, Long memberId) {
+
+		Comment comment = commentRepository.findById(commentId)
+			.orElseThrow(()-> new MyException(CommentErrorCode.COMMENT_NOT_FOUND));
+		Long writerId = comment.getMember().getId();
+		if (!writerId.equals(memberId)) {
+			throw new MyException(CommentErrorCode.COMMENT_FORBIDDEN);
+		}
+
+		comment.updateContent(request.content());
 		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
 	}
 

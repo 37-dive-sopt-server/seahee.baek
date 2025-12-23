@@ -5,4 +5,5 @@ import org.sopt.article.presentation.dto.CommentResponse;
 
 public interface CommentService {
 	CommentResponse createComment(CommentRequest request, Long articleId, Long memberId);
+	CommentResponse updateComment(CommentRequest request, Long commentId, Long memberId);
 }
