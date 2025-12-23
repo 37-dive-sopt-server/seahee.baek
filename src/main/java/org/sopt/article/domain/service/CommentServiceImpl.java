@@ -37,15 +37,21 @@ public class CommentServiceImpl implements CommentService {
 
 	public CommentResponse updateComment(CommentRequest request, Long commentId, Long memberId) {
 
+		Comment comment = throwExceptionOrCommentReturner(commentId, memberId);
+
+		comment.updateContent(request.content());
+		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
+	}
+
+	// 댓글 접근 권한을 체크하고 예외를 던지거나 comment 객체를 반환하는 메서드
+	private Comment throwExceptionOrCommentReturner(Long commentId, Long memberId) {
 		Comment comment = commentRepository.findById(commentId)
 			.orElseThrow(()-> new MyException(CommentErrorCode.COMMENT_NOT_FOUND));
 		Long writerId = comment.getMember().getId();
 		if (!writerId.equals(memberId)) {
 			throw new MyException(CommentErrorCode.COMMENT_FORBIDDEN);
 		}
-
-		comment.updateContent(request.content());
-		return CommentResponse.of(comment.getId(), comment.getContent(), comment.getMember().getName());
+		return comment;
 	}
 
 }
