@@ -42,7 +42,7 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 			.join(a.member, m).fetchJoin()
 			.where(where)
 			.orderBy(a.id.desc())
-			.limit(size+1)
+			.limit(size)
 			.fetch();
 	}
 
@@ -59,7 +59,7 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 			.join(a.member).fetchJoin()
 			.where(where)
 			.orderBy(a.id.desc())
-			.limit(size+1)
+			.limit(size)
 			.fetch();
 	}
 }

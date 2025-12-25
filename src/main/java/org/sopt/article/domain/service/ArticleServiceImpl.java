@@ -18,8 +18,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
@@ -54,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
 	)
 	public CursorArticleAllInfoResponse findAll(Long cursor, int size) {
 
-		List<Article> articleList = articleRepository.findNextArticles(cursor, size);
+		List<Article> articleList = articleRepository.findNextArticles(cursor, size + 1);
 		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
@@ -68,7 +70,16 @@ public class ArticleServiceImpl implements ArticleService {
 	)
 	public CursorArticleAllInfoResponse search(Long cursor, int size, String searchWord, String memberName) {
 
-		List<Article> articleList = articleRepository.search(cursor, size, searchWord, memberName);
+		boolean hasSearchWord = searchWord != null && !searchWord.isBlank();
+		List<Article> articleList;
+
+		if(hasSearchWord) {
+			articleList = articleRepository.searchByCursorFullText(cursor, size + 1, searchWord, memberName);
+		}
+		else {
+			articleList = articleRepository.search(cursor, size + 1, searchWord, memberName);
+		}
+
 		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
