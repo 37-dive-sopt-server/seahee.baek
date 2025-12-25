@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.sopt.article.domain.entity.Comment;
-import org.sopt.article.domain.entity.enums.TAG;
+import org.sopt.article.domain.entity.enums.Tag;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -13,7 +13,7 @@ public record ArticleInfoResponse(
 	Long id,
 	String title,
 	String content,
-	TAG tag,
+	Tag tag,
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	LocalDateTime createdAt,
@@ -27,7 +27,7 @@ public record ArticleInfoResponse(
 		Long id,
 		String title,
 		String content,
-		TAG tag,
+		Tag tag,
 		LocalDateTime createdAt,
 		Long memberId,
 		String memberName,

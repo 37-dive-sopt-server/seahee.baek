@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopt.article.domain.entity.enums.Tag;
 import org.sopt.member.domain.entity.Member;
-import org.sopt.article.domain.entity.enums.TAG;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,7 +36,7 @@ public class Article {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	private TAG tag;
+	private Tag tag;
 
 	private final LocalDateTime createdAt = LocalDateTime.now();
 
@@ -51,14 +51,14 @@ public class Article {
 	private List<Comment> comments = new ArrayList<>();
 
 	@Builder
-	private Article(TAG tag, String title, String content, Member member) {
+	private Article(Tag tag, String title, String content, Member member) {
 		this.tag = tag;
 		this.title = title;
 		this.content = content;
 		this.member = member;
 	}
 
-	public static Article create(String title, String content, Member member, TAG tag) {
+	public static Article create(String title, String content, Member member, Tag tag) {
 		return Article.builder()
 			.title(title)
 			.content(content)
