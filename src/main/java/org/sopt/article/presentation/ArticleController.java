@@ -5,7 +5,7 @@ import org.sopt.common.response.SuccessResponse;
 import org.sopt.article.application.ArticleMemberFacade;
 import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
-import org.sopt.article.presentation.dto.SearchedArticlesResponse;
+
 import org.sopt.member.domain.entity.Member;
 import org.sopt.article.presentation.code.ArticleSuccessCode;
 import org.sopt.article.domain.service.ArticleServiceImpl;
