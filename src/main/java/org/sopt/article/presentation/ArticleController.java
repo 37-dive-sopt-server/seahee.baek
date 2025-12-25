@@ -1,13 +1,13 @@
 package org.sopt.article.presentation;
 
+import org.sopt.article.presentation.dto.CursorArticleAllInfoResponse;
 import org.sopt.common.response.SuccessResponse;
 import org.sopt.article.application.ArticleMemberFacade;
-import org.sopt.article.presentation.dto.ArticleAllInfoResponse;
 import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
-import org.sopt.article.presentation.dto.SearchedArticlesResponse;
+
 import org.sopt.member.domain.entity.Member;
-import org.sopt.common.exception.code.ArticleSuccessCode;
+import org.sopt.article.presentation.code.ArticleSuccessCode;
 import org.sopt.article.domain.service.ArticleServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,20 +47,23 @@ public class ArticleController {
 	}
 
 	@GetMapping
-	public ResponseEntity<SuccessResponse<ArticleAllInfoResponse>> getAllArticles() {
-		ArticleAllInfoResponse response = articleService.findAll();
+	public ResponseEntity<SuccessResponse<CursorArticleAllInfoResponse>> getAllArticles(
+		@RequestParam(required = false) Long cursor,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		CursorArticleAllInfoResponse response = articleService.findAll(cursor, size);
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(ArticleSuccessCode.ARTICLE_GET_SUCCESS, response));
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<SuccessResponse<SearchedArticlesResponse>> searchArticle(
+	public ResponseEntity<SuccessResponse<CursorArticleAllInfoResponse>> searchArticle(
 		@RequestParam(required = false) String searchWord,
 		@RequestParam(required = false) String memberName,
-		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(required = false) Long cursor,
 		@RequestParam(defaultValue = "10") int size
 	) {
-		SearchedArticlesResponse response = articleService.search(searchWord, memberName, page, size);
+		CursorArticleAllInfoResponse response = articleService.search(cursor, size, searchWord, memberName);
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(ArticleSuccessCode.ARTICLE_SEARCH_SUCCESS, response));
 

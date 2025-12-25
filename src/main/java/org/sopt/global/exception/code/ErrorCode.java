@@ -1,5 +1,6 @@
-package org.sopt.common.exception.code.base;
+package org.sopt.global.exception.code;
 
+import org.sopt.common.exception.code.base.BaseErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode implements BaseErrorCode {

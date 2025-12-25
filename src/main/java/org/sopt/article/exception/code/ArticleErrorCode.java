@@ -1,4 +1,4 @@
-package org.sopt.common.exception.code;
+package org.sopt.article.exception.code;
 
 import org.sopt.common.exception.code.base.BaseErrorCode;
 import org.springframework.http.HttpStatus;

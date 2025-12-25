@@ -7,7 +7,7 @@ import org.sopt.member.presentation.dto.MemberAllInfoResponse;
 import org.sopt.member.presentation.dto.MemberCreateRequest;
 import org.sopt.member.presentation.dto.MemberInfoResponse;
 
-import org.sopt.common.exception.code.MemberSuccessCode;
+import org.sopt.member.presentation.code.MemberSuccessCode;
 import org.sopt.member.domain.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -5,9 +5,6 @@ import java.util.List;
 import org.sopt.article.domain.entity.Article;
 import org.sopt.article.domain.entity.QArticle;
 import org.sopt.member.domain.entity.QMember;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
@@ -22,11 +19,15 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 	private final JPAQueryFactory query;
 
 	@Override
-	public Page<Article> search(String searchWord, String memberName, Pageable pageable) {
+	public List<Article> search(Long cursor, int size, String searchWord, String memberName) {
 		QArticle a = QArticle.article;
 		QMember m = QMember.member;
 
 		BooleanBuilder where = new BooleanBuilder();
+
+		if (cursor != null) {
+			where.and(a.id.lt(cursor));
+		}
 
 		if (memberName != null && !memberName.isBlank()) {
 			where.and(m.name.containsIgnoreCase(memberName));
@@ -36,24 +37,29 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 			where.and(a.title.containsIgnoreCase(searchWord));
 		}
 
-		List<Article> content = query
+		return query
 			.selectFrom(a)
 			.join(a.member, m).fetchJoin()
 			.where(where)
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
 			.orderBy(a.id.desc())
+			.limit(size)
 			.fetch();
+	}
 
-		Long articleCount = query
-			.select(a.count())
-			.from(a)
-			.join(a.member, m)
+	public List<Article> findNextArticles(Long cursor, int size) {
+		QArticle a = QArticle.article;
+		BooleanBuilder where = new BooleanBuilder();
+
+		if (cursor != null) {
+			where.and(a.id.lt(cursor));
+		}
+
+		return query
+			.selectFrom(a)
+			.join(a.member).fetchJoin()
 			.where(where)
-			.fetchOne();
-
-		long totalElements = (articleCount == null) ? 0L : articleCount;
-
-		return new PageImpl<>(content, pageable, totalElements);
+			.orderBy(a.id.desc())
+			.limit(size)
+			.fetch();
 	}
 }

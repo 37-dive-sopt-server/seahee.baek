@@ -5,24 +5,23 @@ import java.util.List;
 import org.sopt.article.presentation.dto.ArticleAllInfoResponse;
 import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
-import org.sopt.article.presentation.dto.SearchedArticleInfoResponse;
-import org.sopt.article.presentation.dto.SearchedArticlesResponse;
+import org.sopt.article.presentation.dto.CursorArticleAllInfoResponse;
+
 import org.sopt.article.domain.entity.Article;
 import org.sopt.member.domain.entity.Member;
 import org.sopt.common.exception.MyException;
-import org.sopt.common.exception.code.ArticleErrorCode;
+import org.sopt.article.exception.code.ArticleErrorCode;
 import org.sopt.article.domain.repository.ArticleRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
 
@@ -41,42 +40,47 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleInfoGenerator(article);
 	}
 
+	@Cacheable(
+		cacheNames = "article:detail",
+		key = "#id"
+	)
 	public ArticleInfoResponse findById(Long id) {
 		Article article = articleRepository.findById(id)
 			.orElseThrow(() -> new MyException(ArticleErrorCode.ARTICLE_NOT_FOUND));
 		return articleInfoGenerator(article);
 	}
 
-	public ArticleAllInfoResponse findAll() {
-		List<Article> articleList = articleRepository.findAll();
-		List<ArticleInfoResponse> response = articleList.stream()
-			.map(this::articleInfoGenerator)
-			.toList();
+	@Cacheable(
+		cacheNames = "article:all",
+		key = "T(java.util.Objects).toString(#cursor, 'first') + ':' + #size"
+	)
+	public CursorArticleAllInfoResponse findAll(Long cursor, int size) {
 
-		return new ArticleAllInfoResponse(response);
+		List<Article> articleList = articleRepository.findNextArticles(cursor, size + 1);
+		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
-	public SearchedArticlesResponse search(String searchWord, String memberName, int page, int size) {
+	@Cacheable(
+		cacheNames = "article:search",
+		key =
+			"T(java.util.Objects).toString(#cursor, 'first')"
+				+ " + ':' + #size"
+				+ " + ':' + T(java.util.Objects).toString(#searchWord, 'none')"
+				+ " + ':' + T(java.util.Objects).toString(#memberName, 'none')"
+	)
+	public CursorArticleAllInfoResponse search(Long cursor, int size, String searchWord, String memberName) {
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-		Page<Article> result = articleRepository.search(searchWord, memberName, pageable);
+		boolean hasSearchWord = searchWord != null && !searchWord.isBlank();
+		List<Article> articleList;
 
-		List<SearchedArticleInfoResponse> articles = result.getContent().stream()
-			.map(a -> new SearchedArticleInfoResponse(
-				a.getId(),
-				a.getTitle(),
-				a.getCreatedAt(),
-				a.getMember().getId(),
-				a.getMember().getName()
-			))
-			.toList();
+		if(hasSearchWord) {
+			articleList = articleRepository.searchByCursorFullText(cursor, size + 1, searchWord, memberName);
+		}
+		else {
+			articleList = articleRepository.search(cursor, size + 1, searchWord, memberName);
+		}
 
-		return new SearchedArticlesResponse(
-			articles,
-			result.getNumber(),
-			result.getTotalPages(),
-			result.getTotalElements()
-		);
+		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
 	private ArticleInfoResponse articleInfoGenerator(Article article) {
@@ -87,7 +91,32 @@ public class ArticleServiceImpl implements ArticleService {
 			article.getTag(),
 			article.getCreatedAt(),
 			article.getMember().getId(),
-			article.getMember().getName()
+			article.getMember().getName(),
+			article.getComments()
 		);
 	}
+
+	private CursorArticleAllInfoResponse cursorArticleAllInfoResponseGenerator(int size, List<Article> articleList) {
+
+		boolean hasNext = articleList.size() > size;
+		if (hasNext) {
+			articleList = articleList.subList(0, size);
+		}
+
+		List<ArticleAllInfoResponse> response = articleList.stream()
+			.map(a -> ArticleAllInfoResponse.of(
+				a.getId(),
+				a.getTitle(),
+				a.getTag(),
+				a.getCreatedAt(),
+				a.getMember().getId(),
+				a.getMember().getName()
+			))
+			.toList();
+
+		Long nextCursor = response.isEmpty() ? null : response.get(response.size() - 1).id();
+
+		return new CursorArticleAllInfoResponse(response, nextCursor, hasNext);
+	}
+
 }
