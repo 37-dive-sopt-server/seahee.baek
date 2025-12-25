@@ -12,6 +12,7 @@ import org.sopt.member.domain.entity.Member;
 import org.sopt.common.exception.MyException;
 import org.sopt.article.exception.code.ArticleErrorCode;
 import org.sopt.article.domain.repository.ArticleRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import org.springframework.stereotype.Service;
@@ -37,18 +38,34 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleInfoGenerator(article);
 	}
 
+	@Cacheable(
+		cacheNames = "article:detail",
+		key = "#id"
+	)
 	public ArticleInfoResponse findById(Long id) {
 		Article article = articleRepository.findById(id)
 			.orElseThrow(() -> new MyException(ArticleErrorCode.ARTICLE_NOT_FOUND));
 		return articleInfoGenerator(article);
 	}
 
+	@Cacheable(
+		cacheNames = "article:all",
+		key = "T(java.util.Objects).toString(#cursor, 'first') + ':' + #size"
+	)
 	public CursorArticleAllInfoResponse findAll(Long cursor, int size) {
 
 		List<Article> articleList = articleRepository.findNextArticles(cursor, size);
 		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
+	@Cacheable(
+		cacheNames = "article:search",
+		key =
+			"T(java.util.Objects).toString(#cursor, 'first')"
+				+ " + ':' + #size"
+				+ " + ':' + T(java.util.Objects).toString(#searchWord, 'none')"
+				+ " + ':' + T(java.util.Objects).toString(#memberName, 'none')"
+	)
 	public CursorArticleAllInfoResponse search(Long cursor, int size, String searchWord, String memberName) {
 
 		List<Article> articleList = articleRepository.search(cursor, size, searchWord, memberName);
