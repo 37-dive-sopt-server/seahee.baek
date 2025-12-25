@@ -5,9 +5,6 @@ import java.util.List;
 import org.sopt.article.domain.entity.Article;
 import org.sopt.article.domain.entity.QArticle;
 import org.sopt.member.domain.entity.QMember;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;

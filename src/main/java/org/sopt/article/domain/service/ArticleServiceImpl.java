@@ -6,8 +6,7 @@ import org.sopt.article.presentation.dto.ArticleAllInfoResponse;
 import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
 import org.sopt.article.presentation.dto.CursorArticleAllInfoResponse;
-import org.sopt.article.presentation.dto.SearchedArticleInfoResponse;
-import org.sopt.article.presentation.dto.SearchedArticlesResponse;
+
 import org.sopt.article.domain.entity.Article;
 import org.sopt.member.domain.entity.Member;
 import org.sopt.common.exception.MyException;
@@ -15,10 +14,6 @@ import org.sopt.article.exception.code.ArticleErrorCode;
 import org.sopt.article.domain.repository.ArticleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -51,13 +46,13 @@ public class ArticleServiceImpl implements ArticleService {
 	public CursorArticleAllInfoResponse findAll(Long cursor, int size) {
 
 		List<Article> articleList = articleRepository.findNextArticles(cursor, size);
-		return cursorArticleAllInfoResponseGenerator(cursor, size, articleList);
+		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
 	public CursorArticleAllInfoResponse search(Long cursor, int size, String searchWord, String memberName) {
 
 		List<Article> articleList = articleRepository.search(cursor, size, searchWord, memberName);
-		return cursorArticleAllInfoResponseGenerator(cursor, size, articleList);
+		return cursorArticleAllInfoResponseGenerator(size, articleList);
 	}
 
 	private ArticleInfoResponse articleInfoGenerator(Article article) {
@@ -73,7 +68,7 @@ public class ArticleServiceImpl implements ArticleService {
 		);
 	}
 
-	private CursorArticleAllInfoResponse cursorArticleAllInfoResponseGenerator(Long cursor, int size, List<Article> articleList) {
+	private CursorArticleAllInfoResponse cursorArticleAllInfoResponseGenerator(int size, List<Article> articleList) {
 
 		boolean hasNext = articleList.size() > size;
 		if (hasNext) {
