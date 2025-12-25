@@ -56,4 +56,21 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 
 		return new PageImpl<>(content, pageable, totalElements);
 	}
+
+	public List<Article> findNextArticles(Long cursor, int size) {
+		QArticle a = QArticle.article;
+		BooleanBuilder where = new BooleanBuilder();
+
+		if (cursor != null) {
+			where.and(a.id.lt(cursor));
+		}
+
+		return query
+			.selectFrom(a)
+			.join(a.member).fetchJoin()
+			.where(where)
+			.orderBy(a.id.desc())
+			.limit(size+1)
+			.fetch();
+	}
 }

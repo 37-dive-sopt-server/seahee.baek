@@ -1,8 +1,8 @@
 package org.sopt.article.presentation;
 
+import org.sopt.article.presentation.dto.CursorArticleAllInfoResponse;
 import org.sopt.common.response.SuccessResponse;
 import org.sopt.article.application.ArticleMemberFacade;
-import org.sopt.article.presentation.dto.ArticleAllInfoResponse;
 import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
 import org.sopt.article.presentation.dto.SearchedArticlesResponse;
@@ -47,8 +47,11 @@ public class ArticleController {
 	}
 
 	@GetMapping
-	public ResponseEntity<SuccessResponse<ArticleAllInfoResponse>> getAllArticles() {
-		ArticleAllInfoResponse response = articleService.findAll();
+	public ResponseEntity<SuccessResponse<CursorArticleAllInfoResponse>> getAllArticles(
+		@RequestParam(required = false) Long cursor,
+		@RequestParam(defaultValue = "10") int size
+	) {
+		CursorArticleAllInfoResponse response = articleService.findAll(cursor, size);
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(ArticleSuccessCode.ARTICLE_GET_SUCCESS, response));
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import org.sopt.article.presentation.dto.ArticleAllInfoResponse;
 import org.sopt.article.presentation.dto.ArticleCreateRequest;
 import org.sopt.article.presentation.dto.ArticleInfoResponse;
+import org.sopt.article.presentation.dto.CursorArticleAllInfoResponse;
 import org.sopt.article.presentation.dto.SearchedArticleInfoResponse;
 import org.sopt.article.presentation.dto.SearchedArticlesResponse;
 import org.sopt.article.domain.entity.Article;
@@ -47,13 +48,28 @@ public class ArticleServiceImpl implements ArticleService {
 		return articleInfoGenerator(article);
 	}
 
-	public ArticleAllInfoResponse findAll() {
-		List<Article> articleList = articleRepository.findAll();
-		List<ArticleInfoResponse> response = articleList.stream()
-			.map(this::articleInfoGenerator)
+	public CursorArticleAllInfoResponse findAll(Long cursor, int size) {
+		List<Article> articleList = articleRepository.findNextArticles(cursor, size);
+
+		boolean hasNext = articleList.size() > size;
+		if (hasNext) {
+			articleList = articleList.subList(0, size);
+		}
+
+		List<ArticleAllInfoResponse> response = articleList.stream()
+			.map(a -> ArticleAllInfoResponse.of(
+				a.getId(),
+				a.getTitle(),
+				a.getTag(),
+				a.getCreatedAt(),
+				a.getMember().getId(),
+				a.getMember().getName()
+			))
 			.toList();
 
-		return new ArticleAllInfoResponse(response);
+		Long nextCursor = response.isEmpty() ? null : response.get(response.size() - 1).id();
+
+		return new CursorArticleAllInfoResponse(response, nextCursor, hasNext);
 	}
 
 	public SearchedArticlesResponse search(String searchWord, String memberName, int page, int size) {
