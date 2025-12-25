@@ -57,13 +57,13 @@ public class ArticleController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<SuccessResponse<SearchedArticlesResponse>> searchArticle(
+	public ResponseEntity<SuccessResponse<CursorArticleAllInfoResponse>> searchArticle(
 		@RequestParam(required = false) String searchWord,
 		@RequestParam(required = false) String memberName,
-		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(required = false) Long cursor,
 		@RequestParam(defaultValue = "10") int size
 	) {
-		SearchedArticlesResponse response = articleService.search(searchWord, memberName, page, size);
+		CursorArticleAllInfoResponse response = articleService.search(cursor, size, searchWord, memberName);
 		return ResponseEntity.ok()
 			.body(SuccessResponse.of(ArticleSuccessCode.ARTICLE_SEARCH_SUCCESS, response));
 

@@ -49,7 +49,31 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	public CursorArticleAllInfoResponse findAll(Long cursor, int size) {
+
 		List<Article> articleList = articleRepository.findNextArticles(cursor, size);
+		return cursorArticleAllInfoResponseGenerator(cursor, size, articleList);
+	}
+
+	public CursorArticleAllInfoResponse search(Long cursor, int size, String searchWord, String memberName) {
+
+		List<Article> articleList = articleRepository.search(cursor, size, searchWord, memberName);
+		return cursorArticleAllInfoResponseGenerator(cursor, size, articleList);
+	}
+
+	private ArticleInfoResponse articleInfoGenerator(Article article) {
+		return ArticleInfoResponse.of(
+			article.getId(),
+			article.getTitle(),
+			article.getContent(),
+			article.getTag(),
+			article.getCreatedAt(),
+			article.getMember().getId(),
+			article.getMember().getName(),
+			article.getComments()
+		);
+	}
+
+	private CursorArticleAllInfoResponse cursorArticleAllInfoResponseGenerator(Long cursor, int size, List<Article> articleList) {
 
 		boolean hasNext = articleList.size() > size;
 		if (hasNext) {
@@ -72,39 +96,4 @@ public class ArticleServiceImpl implements ArticleService {
 		return new CursorArticleAllInfoResponse(response, nextCursor, hasNext);
 	}
 
-	public SearchedArticlesResponse search(String searchWord, String memberName, int page, int size) {
-
-		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-		Page<Article> result = articleRepository.search(searchWord, memberName, pageable);
-
-		List<SearchedArticleInfoResponse> articles = result.getContent().stream()
-			.map(a -> new SearchedArticleInfoResponse(
-				a.getId(),
-				a.getTitle(),
-				a.getCreatedAt(),
-				a.getMember().getId(),
-				a.getMember().getName()
-			))
-			.toList();
-
-		return new SearchedArticlesResponse(
-			articles,
-			result.getNumber(),
-			result.getTotalPages(),
-			result.getTotalElements()
-		);
-	}
-
-	private ArticleInfoResponse articleInfoGenerator(Article article) {
-		return ArticleInfoResponse.of(
-			article.getId(),
-			article.getTitle(),
-			article.getContent(),
-			article.getTag(),
-			article.getCreatedAt(),
-			article.getMember().getId(),
-			article.getMember().getName(),
-			article.getComments()
-		);
-	}
 }
